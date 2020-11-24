@@ -1,9 +1,9 @@
 create table accounts (
-    id UUID NOT NULL DEFAULT gen_random_uuid(),
+    id SERIAL NOT NULL,
     password TEXT,
     google_id TEXT,
-    name VARCHAR(50) NOT NULL,
-    email VARCHAR(100) NOT NULL,
+    name TEXT NOT NULL,
+    email TEXT NOT NULL,
     PRIMARY KEY (id),
     UNIQUE (email)
 )
