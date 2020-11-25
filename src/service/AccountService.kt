@@ -1,16 +1,25 @@
 package com.todo.exmaple.service
 
 import com.todo.exmaple.factory.DatabaseFactory.dbQuery
-import com.todo.exmaple.model.Accounts
-import com.todo.exmaple.model.NewAccount
+import com.todo.exmaple.model.*
+import org.jetbrains.exposed.sql.ResultRow
+import org.jetbrains.exposed.sql.SqlExpressionBuilder.eq
 import org.jetbrains.exposed.sql.VarCharColumnType
 import org.jetbrains.exposed.sql.insert
+import org.jetbrains.exposed.sql.select
 import org.jetbrains.exposed.sql.statements.fillParameters
 import org.jetbrains.exposed.sql.transactions.TransactionManager
 import java.util.*
 
 class AccountService {
-    suspend fun createAccount(account: NewAccount) {
+    suspend fun getAccount(id: String): Account? = dbQuery {
+        Todos.select {
+            (Accounts.id eq id)
+        }.mapNotNull { convertAccount(it) }
+            .singleOrNull()
+    }
+
+    suspend fun createAccount(account: NewAccount): Account {
         val conn = TransactionManager.current().connection
         val query = """
 insert into accounts
@@ -28,5 +37,29 @@ values
         val statement = conn.prepareStatement(query)
         statement.fillParameters(parameter)
         statement.executeUpdate()
+
+        return getAccount(key)!!
     }
+
+    suspend fun createOAuthAccount(account: GoogleAccount): Account {
+        var key = UUID.randomUUID().toString()
+        dbQuery {
+            key = (Accounts.insert {
+                it[id] = key
+                it[googleId] = account.googleId
+                it[name] = account.name
+                it[email] = account.email
+            } get Accounts.id)
+        }
+        return getAccount(key)!!
+    }
+
+    private fun convertAccount(row: ResultRow): Account =
+        Account(
+            id = row[Accounts.id],
+            password = row[Accounts.password],
+            name = row[Accounts.name],
+            googleId = row[Accounts.googleId],
+            email = row[Accounts.email],
+        )
 }
