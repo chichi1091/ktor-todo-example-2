@@ -1,5 +1,5 @@
 create table accounts (
-    id SERIAL NOT NULL,
+    id VARCHAR(50) NOT NULL,
     password TEXT,
     google_id TEXT,
     name TEXT NOT NULL,
