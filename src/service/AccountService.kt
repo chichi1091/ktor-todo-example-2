@@ -54,6 +54,30 @@ values
         return getAccount(key)!!
     }
 
+    suspend fun isAuthentication(email: String, password: String): Boolean {
+        val conn = TransactionManager.current().connection
+        val query = """
+select
+    id
+from
+    accounts
+where
+    email = ? and
+    password = crypt(?, gen_salt('md5')
+"""
+        val parameter = listOf(
+            Pair(VarCharColumnType(), email),
+            Pair(VarCharColumnType(), password),
+        )
+        val statement = conn.prepareStatement(query)
+        statement.fillParameters(parameter)
+        val result = statement.executeQuery()
+        result.last()
+        val numberOfRow = result.row
+
+        return numberOfRow >= 1
+    }
+
     private fun convertAccount(row: ResultRow): Account =
         Account(
             id = row[Accounts.id],
