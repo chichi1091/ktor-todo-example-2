@@ -39,7 +39,7 @@ sourceSets {
     main.kotlin.srcDirs = main.java.srcDirs = ['src']
     test.kotlin.srcDirs = test.java.srcDirs = ['test']
     main.resources.srcDirs = ['resources']
-    test.resources.srcDirs = ['testresources']
+    test.resources.srcDirs = ['testResources']
 }
 
 repositories {
@@ -52,24 +52,16 @@ dependencies {
     compile "io.ktor:ktor-server-tomcat:$ktor_version"
     compile "ch.qos.logback:logback-classic:$logback_version"
     compile "io.ktor:ktor-jackson:$ktor_version"
-
     compile "org.jetbrains.exposed:exposed:0.17.7"
     compile 'com.zaxxer:HikariCP:3.4.5'
     compile "org.postgresql:postgresql:42.2.14"
-
     compile 'org.flywaydb:flyway-core:6.5.3'
 
     testCompile "io.ktor:ktor-server-tests:$ktor_version"
-}
-
-def JDBC_DATABASE_URL = System.getenv()['JDBC_DATABASE_URL'] == null ? "jdbc:postgresql://localhost:5432/todo" : System.getenv()['JDBC_DATABASE_URL']
-def JDBC_DATABASE_USERNAME = System.getenv()['JDBC_DATABASE_USERNAME'] == null ? "ktoruser" : System.getenv()['JDBC_DATABASE_USERNAME']
-def JDBC_DATABASE_PASSWORD = System.getenv()['JDBC_DATABASE_PASSWORD'] == null ? "ktorpass" : System.getenv()['JDBC_DATABASE_PASSWORD']
-
-flyway {
-    url = JDBC_DATABASE_URL
-    user = JDBC_DATABASE_USERNAME
-    password = JDBC_DATABASE_PASSWORD
-    baselineOnMigrate=true
-    locations = ["filesystem:resources/db/migration"]
+    testImplementation "io.ktor:ktor-server-tests:$ktor_version"
+    testImplementation 'org.jetbrains.kotlin:kotlin-test-junit5:1.4.20'
+    testImplementation 'org.junit.jupiter:junit-jupiter-api:5.7.0'
+    testRuntimeOnly 'org.junit.platform:junit-platform-launcher:1.7.0'
+    testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.7.0'
+    testRuntimeOnly 'com.h2database:h2:1.4.200'
 }

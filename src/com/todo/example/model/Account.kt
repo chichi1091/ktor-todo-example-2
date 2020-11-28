@@ -1,4 +1,4 @@
-package com.todo.exmaple.model
+package com.todo.example.model
 
 import org.jetbrains.exposed.sql.Column
 import org.jetbrains.exposed.sql.Table

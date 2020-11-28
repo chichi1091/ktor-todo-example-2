@@ -3,7 +3,7 @@ create table accounts (
     password TEXT,
     google_id TEXT,
     name TEXT NOT NULL,
-    email TEXT NOT NULL,
-    PRIMARY KEY (id),
-    UNIQUE (email)
-)
+    email varchar(60) NOT NULL,
+    PRIMARY KEY (id)
+);
+CREATE UNIQUE INDEX unq_accounts_email ON accounts (email);

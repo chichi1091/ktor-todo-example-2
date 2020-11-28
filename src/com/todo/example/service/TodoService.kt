@@ -1,11 +1,13 @@
-package com.todo.exmaple.service
+package com.todo.example.service
 
-import com.todo.exmaple.factory.DatabaseFactory.dbQuery
-import com.todo.exmaple.model.NewTodo
-import com.todo.exmaple.model.Todo
-import com.todo.exmaple.model.Todos
+import com.todo.example.factory.DatabaseFactory.dbQuery
+import com.todo.example.model.NewTodo
+import com.todo.example.model.Todo
+import com.todo.example.model.Todos
+import io.ktor.util.KtorExperimentalAPI
 import org.jetbrains.exposed.sql.*
 
+@KtorExperimentalAPI
 class TodoService {
     suspend fun getAllTodos(): List<Todo> = dbQuery {
         Todos.selectAll().map { convertTodo(it) }

@@ -1,9 +1,8 @@
-package com.todo.exmaple.service
+package com.todo.example.service
 
-import com.todo.exmaple.factory.DatabaseFactory.dbQuery
-import com.todo.exmaple.model.*
+import com.todo.example.factory.DatabaseFactory.dbQuery
+import com.todo.example.model.*
 import org.jetbrains.exposed.sql.ResultRow
-import org.jetbrains.exposed.sql.SqlExpressionBuilder.eq
 import org.jetbrains.exposed.sql.VarCharColumnType
 import org.jetbrains.exposed.sql.insert
 import org.jetbrains.exposed.sql.select

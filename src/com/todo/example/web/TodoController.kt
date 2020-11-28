@@ -1,13 +1,15 @@
-package com.todo.exmaple.web
+package com.todo.example.web
 
-import com.todo.exmaple.model.NewTodo
-import com.todo.exmaple.service.TodoService
+import com.todo.example.model.NewTodo
+import com.todo.example.service.TodoService
 import io.ktor.application.call
 import io.ktor.http.HttpStatusCode
 import io.ktor.request.receive
 import io.ktor.response.respond
 import io.ktor.routing.*
+import io.ktor.util.KtorExperimentalAPI
 
+@KtorExperimentalAPI
 fun Route.todos(todoService: TodoService) {
     route("todos") {
         get("/") {
