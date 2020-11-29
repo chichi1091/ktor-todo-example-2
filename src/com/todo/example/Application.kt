@@ -2,15 +2,19 @@ package com.todo.example
 
 import com.fasterxml.jackson.databind.SerializationFeature
 import com.todo.example.factory.DatabaseFactory
-import com.todo.example.service.TodoService
+import com.todo.example.service.TodoServiceImpl
+import com.todo.example.service.serviceModule
 import com.todo.example.web.todos
 import io.ktor.application.*
 import io.ktor.features.ContentNegotiation
 import io.ktor.jackson.jackson
 import io.ktor.routing.Routing
+import io.ktor.util.KtorExperimentalAPI
+import org.koin.ktor.ext.Koin
 
 fun main(args: Array<String>): Unit = io.ktor.server.tomcat.EngineMain.main(args)
 
+@KtorExperimentalAPI
 @Suppress("unused") // Referenced in application.conf
 @kotlin.jvm.JvmOverloads
 fun Application.module(testing: Boolean = false) {
@@ -21,11 +25,14 @@ fun Application.module(testing: Boolean = false) {
         }
     }
 
+    install(Koin) {
+        modules(serviceModule)
+    }
+
     DatabaseFactory.init()
 
-    val todoService = TodoService()
     install(Routing) {
-        todos(todoService)
+        todos()
     }
 }
 

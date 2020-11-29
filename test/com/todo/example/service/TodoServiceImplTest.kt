@@ -10,8 +10,8 @@ import org.junit.Before
 import org.junit.Test
 
 @KtorExperimentalAPI
-class TodoServiceTest {
-    private val service: TodoService = TodoService()
+class TodoServiceImplTest {
+    private val serviceImpl: TodoServiceImpl = TodoServiceImpl()
 
     @Before
     fun setup() {
@@ -27,7 +27,7 @@ class TodoServiceTest {
                 }
             }
 
-            val todos = service.getAllTodos()
+            val todos = serviceImpl.getAllTodos()
             Assert.assertEquals(todos.size, 5)
         }
     }

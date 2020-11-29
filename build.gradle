@@ -48,14 +48,15 @@ repositories {
 }
 
 dependencies {
-    compile "org.jetbrains.kotlin:kotlin-stdlib-jdk8:$kotlin_version"
-    compile "io.ktor:ktor-server-tomcat:$ktor_version"
-    compile "ch.qos.logback:logback-classic:$logback_version"
-    compile "io.ktor:ktor-jackson:$ktor_version"
-    compile "org.jetbrains.exposed:exposed:0.17.7"
-    compile 'com.zaxxer:HikariCP:3.4.5'
-    compile "org.postgresql:postgresql:42.2.14"
-    compile 'org.flywaydb:flyway-core:6.5.3'
+    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8:$kotlin_version"
+    implementation "io.ktor:ktor-server-tomcat:$ktor_version"
+    implementation "ch.qos.logback:logback-classic:$logback_version"
+    implementation "io.ktor:ktor-jackson:$ktor_version"
+    implementation "org.koin:koin-ktor:2.1.6"
+    implementation "org.jetbrains.exposed:exposed:0.17.7"
+    implementation 'com.zaxxer:HikariCP:3.4.5'
+    implementation "org.postgresql:postgresql:42.2.14"
+    implementation 'org.flywaydb:flyway-core:6.5.3'
 
     testImplementation "io.ktor:ktor-server-tests:$ktor_version"
     testImplementation 'org.jetbrains.kotlin:kotlin-test-junit5:1.4.20'

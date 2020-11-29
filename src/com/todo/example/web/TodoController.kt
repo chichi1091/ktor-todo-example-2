@@ -2,15 +2,19 @@ package com.todo.example.web
 
 import com.todo.example.model.NewTodo
 import com.todo.example.service.TodoService
+import com.todo.example.service.TodoServiceImpl
 import io.ktor.application.call
 import io.ktor.http.HttpStatusCode
 import io.ktor.request.receive
 import io.ktor.response.respond
 import io.ktor.routing.*
 import io.ktor.util.KtorExperimentalAPI
+import org.koin.ktor.ext.inject
 
 @KtorExperimentalAPI
-fun Route.todos(todoService: TodoService) {
+fun Route.todos() {
+    val todoService by inject<TodoService>()
+
     route("todos") {
         get("/") {
             call.respond(todoService.getAllTodos())
