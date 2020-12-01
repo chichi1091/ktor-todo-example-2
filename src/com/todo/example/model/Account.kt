@@ -4,7 +4,7 @@ import org.jetbrains.exposed.sql.Column
 import org.jetbrains.exposed.sql.Table
 
 object Accounts: Table() {
-    val id: Column<String> = varchar("id", 50)
+    val id: Column<Int> = Todos.integer("id").autoIncrement().primaryKey()
     val password: Column<String> = varchar("password", 4000)
     val googleId: Column<String> = varchar("googleId", 4000)
     val name: Column<String> = varchar("name", 4000)
@@ -12,7 +12,7 @@ object Accounts: Table() {
 }
 
 data class Account (
-    val id: String,
+    val id: Int,
     val password: String?,
     val googleId: String?,
     val name: String,
@@ -20,14 +20,14 @@ data class Account (
 )
 
 data class NewAccount (
-    val id: String?,
+    val id: Int?,
     val password: String,
     val name: String,
     val email: String
 )
 
 data class GoogleAccount (
-    val id: String?,
+    val id: Int?,
     val googleId: String,
     val name: String,
     val email: String
