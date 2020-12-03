@@ -9,7 +9,8 @@ import com.todo.example.service.serviceModule
 import com.todo.example.web.accounts
 import com.todo.example.web.todos
 import com.typesafe.config.ConfigFactory
-import io.ktor.application.*
+import io.ktor.application.Application
+import io.ktor.application.install
 import io.ktor.auth.Authentication
 import io.ktor.auth.jwt.jwt
 import io.ktor.config.ApplicationConfig
@@ -71,7 +72,10 @@ fun Application.module(testing: Boolean = false, mockModule: Module? = null) {
     }
 }
 
-class JWTConfig(var appConfig: ApplicationConfig) {
+@KtorExperimentalAPI
+class JWTConfig {
+    private val appConfig: ApplicationConfig
+
     constructor() {
         appConfig = HoconApplicationConfig(ConfigFactory.load())
     }
