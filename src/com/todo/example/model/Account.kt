@@ -1,5 +1,6 @@
 package com.todo.example.model
 
+import io.ktor.auth.Principal
 import org.jetbrains.exposed.sql.Column
 import org.jetbrains.exposed.sql.Table
 
@@ -18,6 +19,15 @@ data class Account (
     val name: String,
     val email: String
 )
+
+data class Login (
+    val email: String,
+    val password: String
+)
+
+data class AuthUser (
+    val id: Int
+): Principal
 
 data class NewAccount (
     val id: Int?,

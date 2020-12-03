@@ -50,9 +50,12 @@ repositories {
 dependencies {
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8:$kotlin_version"
     implementation "io.ktor:ktor-server-tomcat:$ktor_version"
-    implementation "ch.qos.logback:logback-classic:$logback_version"
     implementation "io.ktor:ktor-jackson:$ktor_version"
+    implementation "io.ktor:ktor-auth:$ktor_version"
+    implementation "io.ktor:ktor-auth-jwt:$ktor_version"
+
     implementation "org.koin:koin-ktor:2.1.6"
+    implementation "ch.qos.logback:logback-classic:$logback_version"
     implementation "org.jetbrains.exposed:exposed:0.17.7"
     implementation 'com.zaxxer:HikariCP:3.4.5'
     implementation "org.postgresql:postgresql:42.2.14"

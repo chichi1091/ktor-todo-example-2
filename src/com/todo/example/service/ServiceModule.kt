@@ -5,4 +5,5 @@ import org.koin.experimental.builder.singleBy
 
 val serviceModule = module {
     singleBy<TodoService, TodoServiceImpl>()
+    singleBy<AccountService, AccountServiceImpl>()
 }
