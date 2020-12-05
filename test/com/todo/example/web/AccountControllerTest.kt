@@ -3,6 +3,7 @@ package com.todo.example.web
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.databind.SerializationFeature
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
+import com.todo.example.JWTConfig
 import com.todo.example.model.Account
 import com.todo.example.model.NewAccount
 import com.todo.example.module
@@ -20,14 +21,17 @@ import org.junit.Test
 import org.koin.core.module.Module
 import org.koin.dsl.module
 import kotlin.test.assertEquals
+import kotlin.test.assertNotNull
 
 class AccountControllerTest {
     private lateinit var mapper: ObjectMapper
+    private lateinit var jwtConfig: JWTConfig
 
     @Before
     fun before() {
         mapper = jacksonObjectMapper()
         mapper.enable(SerializationFeature.INDENT_OUTPUT)
+        jwtConfig = JWTConfig()
     }
 
     @Test
@@ -50,7 +54,7 @@ class AccountControllerTest {
                 setBody(mapper.writeValueAsString(newAccount))
             }.response.apply {
                 assertEquals(HttpStatusCode.Created, status())
-                assertEquals(mapper.writeValueAsString(account), content)
+                assertNotNull(content)
             }
         }
     }

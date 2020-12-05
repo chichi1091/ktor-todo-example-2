@@ -22,7 +22,10 @@ fun Route.accounts() {
     route("accounts") {
         post("/") {
             val newAccount = call.receive<NewAccount>()
-            call.respond(HttpStatusCode.Created, accountService.createAccount(newAccount))
+            val account = accountService.createAccount(newAccount)
+            val token = jwtConfig.createToken(account.id)
+            val response = AuthResponse(token)
+            call.respond(HttpStatusCode.Created, response)
         }
 
         post("/auth") {
@@ -31,7 +34,8 @@ fun Route.accounts() {
             if(account == null) call.respond(HttpStatusCode.Forbidden)
             else {
                 val token = jwtConfig.createToken(account.id)
-                call.respond(HttpStatusCode.OK, token)
+                val response = AuthResponse(token)
+                call.respond(HttpStatusCode.OK, response)
             }
         }
     }
