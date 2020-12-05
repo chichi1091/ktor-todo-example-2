@@ -1,9 +1,7 @@
 package com.todo.example
 
-import com.auth0.jwt.JWT
 import com.fasterxml.jackson.databind.SerializationFeature
 import com.todo.example.factory.DatabaseFactory
-import com.todo.example.model.AuthUser
 import com.todo.example.service.serviceModule
 import com.todo.example.web.accounts
 import com.todo.example.web.todos
@@ -11,6 +9,7 @@ import com.typesafe.config.ConfigFactory
 import io.ktor.application.Application
 import io.ktor.application.install
 import io.ktor.auth.Authentication
+import io.ktor.auth.jwt.JWTPrincipal
 import io.ktor.auth.jwt.jwt
 import io.ktor.config.HoconApplicationConfig
 import io.ktor.features.ContentNegotiation
@@ -42,22 +41,19 @@ fun Application.module(testing: Boolean = false, mockModule: Module? = null) {
     val jwtConfig = JWTConfig()
     install(Authentication) {
         jwt {
-            realm = javaClass.packageName
-            verifier(
-                JWT.require(jwtConfig.algorithm)
-                    .withAudience(jwtConfig.audience)
-                    .withIssuer(jwtConfig.issuer)
-                    .build()
-            )
-
-            validate {
-                it.payload.getClaim(jwtConfig.userId).let { claim ->
-                    if (!claim.isNull) {
-                        AuthUser(claim.asInt())
-                    } else {
-                        null
-                    }
-                }
+            realm = jwtConfig.realm
+            verifier(jwtConfig.makeJwtVerifier())
+            validate {credential ->
+                if (credential.payload.audience.contains(jwtConfig.audience))
+                    JWTPrincipal(credential.payload)
+                else null
+//                it.payload.getClaim(jwtConfig.userId).let { claim ->
+//                    if (!claim.isNull) {
+//                        AuthUser(claim.asInt())
+//                    } else {
+//                        null
+//                    }
+//                }
             }
         }
     }

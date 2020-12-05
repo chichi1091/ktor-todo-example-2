@@ -1,6 +1,7 @@
 package com.todo.example
 
 import com.auth0.jwt.JWT
+import com.auth0.jwt.JWTVerifier
 import com.auth0.jwt.algorithms.Algorithm
 import com.typesafe.config.ConfigFactory
 import io.ktor.config.ApplicationConfig
@@ -37,6 +38,17 @@ class JWTConfig {
         get() {
             return appConfig.property("jwt.userId").getString()
         }
+
+    val realm: String
+    get() {
+        return appConfig.property("jwt.realm").getString()
+    }
+
+    fun makeJwtVerifier(): JWTVerifier = JWT
+        .require(algorithm)
+        .withAudience(audience)
+        .withIssuer(issuer)
+        .build()
 
     fun createToken(id: Int): String {
         return JWT.create()
