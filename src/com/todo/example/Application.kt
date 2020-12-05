@@ -1,7 +1,6 @@
 package com.todo.example
 
 import com.auth0.jwt.JWT
-import com.auth0.jwt.algorithms.Algorithm
 import com.fasterxml.jackson.databind.SerializationFeature
 import com.todo.example.factory.DatabaseFactory
 import com.todo.example.model.AuthUser
@@ -13,7 +12,6 @@ import io.ktor.application.Application
 import io.ktor.application.install
 import io.ktor.auth.Authentication
 import io.ktor.auth.jwt.jwt
-import io.ktor.config.ApplicationConfig
 import io.ktor.config.HoconApplicationConfig
 import io.ktor.features.ContentNegotiation
 import io.ktor.jackson.jackson
@@ -69,34 +67,5 @@ fun Application.module(testing: Boolean = false, mockModule: Module? = null) {
     install(Routing) {
         todos()
         accounts()
-    }
-}
-
-@KtorExperimentalAPI
-class JWTConfig {
-    private val appConfig: ApplicationConfig
-
-    constructor() {
-        appConfig = HoconApplicationConfig(ConfigFactory.load())
-    }
-
-    val algorithm: Algorithm
-    get() {
-        return Algorithm.HMAC256(appConfig.property("jwt.algorithm").getString())
-    }
-
-    val issuer: String
-    get() {
-        return appConfig.property("jwt.issuer").getString()
-    }
-
-    val audience: String
-    get() {
-        return appConfig.property("jwt.audience").getString()
-    }
-
-    val userId: String
-    get() {
-        return appConfig.property("jwt.userId").getString()
     }
 }

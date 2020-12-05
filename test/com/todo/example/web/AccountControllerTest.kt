@@ -3,21 +3,25 @@ package com.todo.example.web
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.databind.SerializationFeature
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
-import com.todo.example.model.Todo
+import com.todo.example.model.Account
+import com.todo.example.model.NewAccount
 import com.todo.example.module
-import com.todo.example.service.MockTodoServiceImpl
-import com.todo.example.service.TodoService
+import com.todo.example.service.AccountService
+import com.todo.example.service.MockAccountServiceImpl
+import io.ktor.http.ContentType
+import io.ktor.http.HttpHeaders
 import io.ktor.http.HttpMethod
 import io.ktor.http.HttpStatusCode
 import io.ktor.server.testing.TestApplicationEngine
 import io.ktor.server.testing.handleRequest
+import io.ktor.server.testing.setBody
 import org.junit.Before
 import org.junit.Test
 import org.koin.core.module.Module
 import org.koin.dsl.module
 import kotlin.test.assertEquals
 
-class TodoControllerTest {
+class AccountControllerTest {
     private lateinit var mapper: ObjectMapper
 
     @Before
@@ -27,10 +31,10 @@ class TodoControllerTest {
     }
 
     @Test
-    fun タスク一覧を呼び出すと200が変えること() {
-        val todos = listOf(Todo(1, "test1"), Todo(2, "test2"))
+    fun アカウントの新規作成が行える() {
+        val account = Account(1, "password", "test", "test@hoge.com")
         val mockModule: Module = module {
-            single{ MockTodoServiceImpl(todos) as TodoService }
+            single{ MockAccountServiceImpl(account) as AccountService }
         }
 
         val engine: TestApplicationEngine = TestApplicationEngine().apply {
@@ -38,10 +42,15 @@ class TodoControllerTest {
             application.module(true, mockModule)
         }
 
+        val newAccount = NewAccount(null, "password", "test", "test@hoge.com")
+
         with(engine) {
-            handleRequest(HttpMethod.Get, "/todos").response.apply {
-                assertEquals(HttpStatusCode.OK, status())
-                assertEquals(mapper.writeValueAsString(todos), content)
+            handleRequest(HttpMethod.Post, "/accounts") {
+                addHeader(HttpHeaders.ContentType, ContentType.Application.Json.toString())
+                setBody(mapper.writeValueAsString(newAccount))
+            }.response.apply {
+                assertEquals(HttpStatusCode.Created, status())
+                assertEquals(mapper.writeValueAsString(account), content)
             }
         }
     }
