@@ -1,6 +1,7 @@
 package com.todo.example.model
 
 import io.ktor.auth.Principal
+import io.ktor.auth.jwt.JWTPrincipal
 import org.jetbrains.exposed.sql.Column
 import org.jetbrains.exposed.sql.Table
 
@@ -23,9 +24,13 @@ data class Login (
     val password: String
 )
 
-data class AuthUser (
-    val id: Int
-): Principal
+data class AuthUser (val id: Int): Principal {
+    companion object {
+        fun toAuthUser(principal: JWTPrincipal) = AuthUser(
+            principal.payload.getClaim("id")?.asInt() ?: throw IllegalStateException("unauthorized")
+        )
+    }
+}
 
 data class NewAccount (
     val id: Int?,
