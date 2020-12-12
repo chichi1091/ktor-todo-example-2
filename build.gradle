@@ -22,7 +22,7 @@ mainClassName = "io.ktor.server.tomcat.EngineMain"
 
 jar {
     manifest {
-        attributes 'Main-Class': "com.todo.example.ApplicationKt"
+        attributes 'Main-Class': "com.todo.example.infrastructure.ApplicationKt"
     }
     from {
         configurations.compile.collect {
