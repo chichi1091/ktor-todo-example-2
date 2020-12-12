@@ -10,42 +10,42 @@ import org.jetbrains.exposed.sql.*
 
 @KtorExperimentalAPI
 class TodoRepositoryImpl: TodoRepository {
-    override suspend fun getAllTodos(): List<Todo> = dbQuery {
+    override suspend fun findAll(): List<Todo> = dbQuery {
         Todos.selectAll().map { convertTodo(it) }
     }
 
-    override suspend fun getTodo(id: Int): Todo? = dbQuery {
+    override suspend fun findById(id: Int): Todo? = dbQuery {
         Todos.select {
             (Todos.id eq id)
         }.mapNotNull { convertTodo(it) }
             .singleOrNull()
     }
 
-    override suspend fun addTodo(todo: NewTodo): Todo {
+    override suspend fun create(todo: NewTodo): Todo {
         var key = 0
         dbQuery {
             key = (Todos.insert {
                 it[task] = todo.task
             } get Todos.id)
         }
-        return getTodo(key)!!
+        return findById(key)!!
     }
 
-    override suspend fun updateTodo(todo: NewTodo): Todo? {
+    override suspend fun update(todo: NewTodo): Todo? {
         val id = todo.id
         return if (id == null) {
-            addTodo(todo)
+            create(todo)
         } else {
             dbQuery {
                 Todos.update({ Todos.id eq id }) {
                     it[task] = todo.task
                 }
             }
-            getTodo(id)
+            findById(id)
         }
     }
 
-    override suspend fun deleteTodo(id: Int): Boolean {
+    override suspend fun delete(id: Int): Boolean {
         return dbQuery {
             Todos.deleteWhere { Todos.id eq id } > 0
         }.also {

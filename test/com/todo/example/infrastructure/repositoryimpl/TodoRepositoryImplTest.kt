@@ -28,7 +28,7 @@ class TodoRepositoryImplTest {
                 }
             }
 
-            val todos = serviceImpl.getAllTodos()
+            val todos = serviceImpl.findAll()
             Assert.assertEquals(todos.size, 5)
         }
     }

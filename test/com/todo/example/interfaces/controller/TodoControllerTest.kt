@@ -8,6 +8,8 @@ import com.todo.example.infrastructure.framework.JWTConfig
 import com.todo.example.infrastructure.module
 import com.todo.example.infrastructure.repositoryimpl.MockTodoRepositoryImpl
 import com.todo.example.interfaces.repository.TodoRepository
+import com.todo.example.usecase.TodoUseCase
+import com.todo.example.usecase.impl.TodoUseCaseImpl
 import io.ktor.http.HttpHeaders
 import io.ktor.http.HttpMethod
 import io.ktor.http.HttpStatusCode
@@ -45,6 +47,8 @@ class TodoControllerTest {
             Todo(2, "test2")
         )
         val mockModule: Module = module {
+            single { TodoController(get()) }
+            single<TodoUseCase> { TodoUseCaseImpl(get()) }
             single{ MockTodoRepositoryImpl(todos) as TodoRepository }
         }
 

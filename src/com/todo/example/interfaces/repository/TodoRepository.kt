@@ -4,9 +4,9 @@ import com.todo.example.domain.Todo
 import com.todo.example.interfaces.model.NewTodo
 
 interface TodoRepository {
-    suspend fun getAllTodos(): List<Todo>
-    suspend fun getTodo(id: Int): Todo?
-    suspend fun addTodo(todo: NewTodo): Todo
-    suspend fun updateTodo(todo: NewTodo): Todo?
-    suspend fun deleteTodo(id: Int): Boolean
+    suspend fun findAll(): List<Todo>
+    suspend fun findById(id: Int): Todo?
+    suspend fun create(todo: NewTodo): Todo
+    suspend fun update(todo: NewTodo): Todo?
+    suspend fun delete(id: Int): Boolean
 }

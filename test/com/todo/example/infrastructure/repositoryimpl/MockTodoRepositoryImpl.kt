@@ -7,19 +7,19 @@ import com.todo.example.interfaces.repository.TodoRepository
 class MockTodoRepositoryImpl(
     private val todos: List<Todo>
 ): TodoRepository {
-    override suspend fun getAllTodos(): List<Todo> {
+    override suspend fun findAll(): List<Todo> {
         return todos
     }
-    override suspend fun getTodo(id: Int): Todo? {
+    override suspend fun findById(id: Int): Todo? {
         return null
     }
-    override suspend fun addTodo(todo: NewTodo): Todo {
+    override suspend fun create(todo: NewTodo): Todo {
         return Todo(3, "test3")
     }
-    override suspend fun updateTodo(todo: NewTodo): Todo? {
+    override suspend fun update(todo: NewTodo): Todo? {
         return null
     }
-    override suspend fun deleteTodo(id: Int): Boolean {
+    override suspend fun delete(id: Int): Boolean {
         return true
     }
 }
