@@ -22,7 +22,7 @@ val koinModule = module {
 
     // UseCase
     single<AccountUseCase> { AccountUseCaseImpl(get()) }
-    single<TodoUseCase> { TodoUseCaseImpl(get()) }
+    single<TodoUseCase> { TodoUseCaseImpl(get(), get()) }
 
     // Repository
     singleBy<TodoRepository, TodoRepositoryImpl>()

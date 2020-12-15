@@ -1,7 +1,7 @@
 package com.todo.example.interfaces.controller
 
-import com.todo.example.domain.Todo
-import com.todo.example.interfaces.model.NewTodo
+import com.todo.example.interfaces.model.NewTodoModel
+import com.todo.example.interfaces.model.TodoModel
 import com.todo.example.usecase.TodoUseCase
 import io.ktor.application.call
 import io.ktor.auth.authenticate
@@ -13,10 +13,10 @@ import io.ktor.util.KtorExperimentalAPI
 import org.koin.ktor.ext.inject
 
 class TodoController(private val useCase: TodoUseCase) {
-    suspend fun getAllTodos(): List<Todo> = useCase.getAllTodos()
-    suspend fun getTodo(id: Int): Todo? = useCase.getTodo(id)
-    suspend fun addTodo(newTodo: NewTodo): Todo = useCase.addTodo(newTodo)
-    suspend fun updateTodo(newTodo: NewTodo): Todo? = useCase.updateTodo(newTodo)
+    suspend fun getAllTodos(): List<TodoModel> = useCase.getAllTodos()
+    suspend fun getTodo(id: Int): TodoModel? = useCase.getTodo(id)
+    suspend fun addTodo(newTodoModel: NewTodoModel): TodoModel = useCase.addTodo(newTodoModel)
+    suspend fun updateTodo(newTodoModel: NewTodoModel): TodoModel? = useCase.updateTodo(newTodoModel)
     suspend fun deleteTodo(id: Int): Boolean = useCase.deleteTodo(id)
 }
 
@@ -39,12 +39,12 @@ fun Route.todos() {
             }
 
             post("/") {
-                val newTodo = call.receive<NewTodo>()
+                val newTodo = call.receive<NewTodoModel>()
                 call.respond(HttpStatusCode.Created, controller.addTodo(newTodo))
             }
 
             put("/{id}") {
-                val todo = call.receive<NewTodo>()
+                val todo = call.receive<NewTodoModel>()
                 val updated = controller.updateTodo(todo)
                 if (updated == null) call.respond(HttpStatusCode.NotFound)
                 else call.respond(HttpStatusCode.OK, updated)

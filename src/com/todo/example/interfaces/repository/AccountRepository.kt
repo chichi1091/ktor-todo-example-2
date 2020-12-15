@@ -1,6 +1,6 @@
 package com.todo.example.interfaces.repository
 
-import com.todo.example.domain.Account
+import com.todo.example.domain.account.Account
 import com.todo.example.interfaces.model.NewAccount
 
 interface AccountRepository {

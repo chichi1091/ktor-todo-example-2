@@ -1,6 +1,7 @@
 package com.todo.example.infrastructure.repositoryimpl
 
-import com.todo.example.domain.Account
+import com.todo.example.domain.account.Account
+import com.todo.example.domain.account.AccountId
 import com.todo.example.infrastructure.dao.Accounts
 import com.todo.example.infrastructure.framework.DatabaseFactory.dbQuery
 import com.todo.example.interfaces.model.NewAccount
@@ -50,8 +51,7 @@ class AccountRepositoryImpl: AccountRepository {
 
     private fun convertAccount(row: ResultRow): Account =
         Account(
-            id = row[Accounts.id],
-            password = row[Accounts.password],
+            accountId = AccountId(row[Accounts.id]),
             name = row[Accounts.name],
             email = row[Accounts.email],
         )

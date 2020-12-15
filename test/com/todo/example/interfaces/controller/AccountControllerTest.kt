@@ -3,7 +3,8 @@ package com.todo.example.interfaces.controller
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.databind.SerializationFeature
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
-import com.todo.example.domain.Account
+import com.todo.example.domain.account.Account
+import com.todo.example.domain.account.AccountId
 import com.todo.example.infrastructure.framework.JWTConfig
 import com.todo.example.infrastructure.module
 import com.todo.example.infrastructure.repositoryimpl.MockAccountRepositoryImpl
@@ -21,6 +22,7 @@ import io.ktor.server.testing.setBody
 import io.ktor.util.KtorExperimentalAPI
 import org.junit.Before
 import org.junit.Test
+import org.koin.core.context.stopKoin
 import org.koin.core.module.Module
 import org.koin.dsl.module
 import kotlin.test.assertEquals
@@ -40,7 +42,7 @@ class AccountControllerTest {
 
     @Test
     fun アカウントの新規作成が行える() {
-        val account = Account(1, "password", "test", "test@hoge.com")
+        val account = Account(AccountId(1), "test", "test@hoge.com")
         val mockModule: Module = module {
             single{ AccountController(get()) }
             single<AccountUseCase> { AccountUseCaseImpl(get()) }
@@ -63,6 +65,7 @@ class AccountControllerTest {
                 assertEquals(HttpStatusCode.Created, status())
                 assertNotNull(content)
             }
+            stopKoin()
         }
     }
 }

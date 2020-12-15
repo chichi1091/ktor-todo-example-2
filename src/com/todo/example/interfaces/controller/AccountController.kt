@@ -21,7 +21,7 @@ class AccountController(private val useCase: AccountUseCase) {
 
     suspend fun createAccount(newAccount: NewAccount): AuthViewModel {
         val account = useCase.createAccount(newAccount)
-        val token = jwtConfig.createToken(account.id)
+        val token = jwtConfig.createToken(account.accountId.raw)
         return AuthViewModel(token)
     }
 
@@ -29,7 +29,7 @@ class AccountController(private val useCase: AccountUseCase) {
         val account = useCase.authentication(login)
         return if(account == null) null
         else {
-            val token = jwtConfig.createToken(account.id)
+            val token = jwtConfig.createToken(account.accountId.raw)
             AuthViewModel(token)
         }
     }

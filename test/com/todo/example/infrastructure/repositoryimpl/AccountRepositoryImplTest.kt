@@ -1,5 +1,6 @@
 package com.todo.example.infrastructure.repositoryimpl
 
+import com.todo.example.domain.account.AccountId
 import com.todo.example.infrastructure.dao.Accounts
 import com.todo.example.infrastructure.framework.DatabaseFactory
 import com.todo.example.interfaces.model.NewAccount
@@ -40,8 +41,7 @@ class AccountRepositoryImplTest {
             val sut = serviceImpl.getAccount(id)
 
             Assert.assertNotEquals(sut, null)
-            Assert.assertEquals(sut?.id, id)
-            Assert.assertEquals(sut?.password, serviceImpl.createHash(testPassword))
+            Assert.assertEquals(sut?.accountId, AccountId(id))
             Assert.assertEquals(sut?.email, testEmail)
             Assert.assertEquals(sut?.name, testName)
         }
@@ -64,8 +64,7 @@ class AccountRepositoryImplTest {
                     name = name
                 )
             )
-            Assert.assertEquals(account.id, 1)
-            Assert.assertEquals(account.password, serviceImpl.createHash(password))
+            Assert.assertEquals(account.accountId, AccountId(1))
             Assert.assertEquals(account.email, email)
             Assert.assertEquals(account.name, name)
         }
@@ -91,8 +90,7 @@ class AccountRepositoryImplTest {
             val sut = serviceImpl.authentication(testEmail, testPassword)
 
             Assert.assertNotEquals(sut, null)
-            Assert.assertEquals(sut?.id, id)
-            Assert.assertEquals(sut?.password, serviceImpl.createHash(testPassword))
+            Assert.assertEquals(sut?.accountId, AccountId(id))
             Assert.assertEquals(sut?.email, testEmail)
             Assert.assertEquals(sut?.name, testName)
         }

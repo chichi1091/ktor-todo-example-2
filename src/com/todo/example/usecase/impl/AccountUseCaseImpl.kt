@@ -1,6 +1,6 @@
 package com.todo.example.usecase.impl
 
-import com.todo.example.domain.Account
+import com.todo.example.domain.account.Account
 import com.todo.example.interfaces.model.Login
 import com.todo.example.interfaces.model.NewAccount
 import com.todo.example.interfaces.repository.AccountRepository

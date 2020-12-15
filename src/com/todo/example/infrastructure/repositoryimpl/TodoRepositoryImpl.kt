@@ -1,9 +1,12 @@
 package com.todo.example.infrastructure.repositoryimpl
 
-import com.todo.example.domain.Todo
+import com.todo.example.domain.account.AccountId
+import com.todo.example.domain.todo.Status
+import com.todo.example.domain.todo.Todo
+import com.todo.example.domain.todo.TodoId
 import com.todo.example.infrastructure.dao.Todos
 import com.todo.example.infrastructure.framework.DatabaseFactory.dbQuery
-import com.todo.example.interfaces.model.NewTodo
+import com.todo.example.interfaces.model.NewTodoModel
 import com.todo.example.interfaces.repository.TodoRepository
 import io.ktor.util.KtorExperimentalAPI
 import org.jetbrains.exposed.sql.*
@@ -21,24 +24,24 @@ class TodoRepositoryImpl: TodoRepository {
             .singleOrNull()
     }
 
-    override suspend fun create(todo: NewTodo): Todo {
+    override suspend fun create(todoModel: NewTodoModel): Todo {
         var key = 0
         dbQuery {
             key = (Todos.insert {
-                it[task] = todo.task
+                it[task] = todoModel.task
             } get Todos.id)
         }
         return findById(key)!!
     }
 
-    override suspend fun update(todo: NewTodo): Todo? {
-        val id = todo.id
+    override suspend fun update(todoModel: NewTodoModel): Todo? {
+        val id = todoModel.id
         return if (id == null) {
-            create(todo)
+            create(todoModel)
         } else {
             dbQuery {
                 Todos.update({ Todos.id eq id }) {
-                    it[task] = todo.task
+                    it[task] = todoModel.task
                 }
             }
             findById(id)
@@ -55,7 +58,9 @@ class TodoRepositoryImpl: TodoRepository {
 
     private fun convertTodo(row: ResultRow): Todo =
         Todo(
-            id = row[Todos.id],
-            task = row[Todos.task]
+            todoId = TodoId(row[Todos.id]),
+            task = row[Todos.task],
+            status = Status.valueOf(row[Todos.status]),
+            personId = AccountId(row[Todos.personId]),
         )
 }
