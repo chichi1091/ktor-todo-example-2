@@ -14,7 +14,7 @@ class TodoUseCaseImpl(
     override suspend fun getAllTodos(): List<TodoModel> {
         val todos = todoRepository.findAll()
         return todos.map {
-            val account = accountRepository.getAccount(it.personId.raw)
+            val account = accountRepository.findByAccountId(it.personId.raw)
                 ?: throw NullPointerException()
             TodoModel(it.todoId?.raw, it.task, it.status, account.name)
         }
@@ -24,7 +24,7 @@ class TodoUseCaseImpl(
         val todo = todoRepository.findById(id)
         return if(todo == null) null
         else {
-            val account = accountRepository.getAccount(todo.personId.raw)
+            val account = accountRepository.findByAccountId(todo.personId.raw)
                 ?: throw NullPointerException()
             TodoModel(todo.todoId?.raw, todo.task, todo.status, account.name)
         }
@@ -34,7 +34,7 @@ class TodoUseCaseImpl(
         val todo = Todo.createTodo(newTodoModel.task, accountId)
         val newTodo = todoRepository.create(todo)
         return run {
-            val account = accountRepository.getAccount(newTodo.personId.raw)
+            val account = accountRepository.findByAccountId(newTodo.personId.raw)
                 ?: throw NullPointerException()
             TodoModel(newTodo.todoId?.raw, newTodo.task, newTodo.status, account.name)
         }
@@ -48,7 +48,7 @@ class TodoUseCaseImpl(
         val newTodo = todoRepository.update(todo)
         return if(newTodo == null) null
         else {
-            val account = accountRepository.getAccount(newTodo.personId.raw)
+            val account = accountRepository.findByAccountId(newTodo.personId.raw)
                 ?: throw NullPointerException()
             TodoModel(newTodo.todoId?.raw, newTodo.task, newTodo.status, account.name)
         }

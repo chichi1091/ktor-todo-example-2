@@ -38,7 +38,7 @@ class AccountRepositoryImplTest {
                 } get Accounts.id
             }
 
-            val sut = serviceImpl.getAccount(id)
+            val sut = serviceImpl.findByAccountId(id)
 
             Assert.assertNotEquals(sut, null)
             Assert.assertEquals(sut?.accountId, AccountId(id))

@@ -13,9 +13,16 @@ import java.security.MessageDigest
 
 @KtorExperimentalAPI
 class AccountRepositoryImpl: AccountRepository {
-    override suspend fun getAccount(id: Int): Account? = dbQuery {
+    override suspend fun findByAccountId(id: Int): Account? = dbQuery {
         Accounts.select {
             (Accounts.id eq id)
+        }.mapNotNull { convertAccount(it) }
+            .singleOrNull()
+    }
+
+    override suspend fun findByEmail(email: String): Account? = dbQuery  {
+        Accounts.select {
+            (Accounts.email eq email)
         }.mapNotNull { convertAccount(it) }
             .singleOrNull()
     }
@@ -29,7 +36,7 @@ class AccountRepositoryImpl: AccountRepository {
                 it[email] = account.email
             } get Accounts.id)
         }
-        return getAccount(key)!!
+        return findByAccountId(key)!!
     }
 
     override suspend fun authentication(email: String, password: String): Account? = dbQuery {

@@ -12,6 +12,9 @@ import io.ktor.util.KtorExperimentalAPI
 class AccountUseCaseImpl(private val accountRepository: AccountRepository): AccountUseCase {
 
     override suspend fun createAccount(newAccount: NewAccountModel): AccountId {
+        val duplicate = accountRepository.findByEmail(newAccount.email)
+        if(duplicate != null) throw IllegalArgumentException("既に登録済みのメールアドレスです")
+
         val account = Account.createAccount(newAccount.name, newAccount.email)
         return accountRepository.createAccount(account, newAccount.password).accountId!!
     }
