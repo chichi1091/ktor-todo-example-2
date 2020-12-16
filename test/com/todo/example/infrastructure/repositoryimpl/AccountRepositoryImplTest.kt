@@ -1,9 +1,9 @@
 package com.todo.example.infrastructure.repositoryimpl
 
+import com.todo.example.domain.account.Account
 import com.todo.example.domain.account.AccountId
 import com.todo.example.infrastructure.dao.Accounts
 import com.todo.example.infrastructure.framework.DatabaseFactory
-import com.todo.example.interfaces.model.NewAccount
 import io.ktor.util.KtorExperimentalAPI
 import kotlinx.coroutines.runBlocking
 import org.jetbrains.exposed.sql.insert
@@ -56,14 +56,7 @@ class AccountRepositoryImplTest {
             val password = "password"
             val name = "てすとたろう"
 
-            val account = serviceImpl.createAccount(
-                NewAccount(
-                    id = null,
-                    email = email,
-                    password = password,
-                    name = name
-                )
-            )
+            val account = serviceImpl.createAccount(Account.createAccount(name, email), password)
             Assert.assertEquals(account.accountId, AccountId(1))
             Assert.assertEquals(account.email, email)
             Assert.assertEquals(account.name, name)

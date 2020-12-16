@@ -4,7 +4,6 @@ import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.databind.SerializationFeature
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import com.todo.example.domain.account.Account
-import com.todo.example.domain.account.AccountId
 import com.todo.example.domain.todo.Status
 import com.todo.example.domain.todo.Todo
 import com.todo.example.infrastructure.framework.JWTConfig
@@ -53,7 +52,7 @@ class TodoControllerTest {
             Todo.reconstruct(1, "test1", Status.INCOMPLETE.toString(), 1),
             Todo.reconstruct(2, "test2", Status.COMPLETED.toString(), 1),
         )
-        val account = Account(AccountId(1), "test", "hoge@hoge.com")
+        val account = Account.reconstruct(1, "test", "hoge@hoge.com")
 
         val todoModels = listOf(
             TodoModel(1, "test1", Status.INCOMPLETE, "test"),

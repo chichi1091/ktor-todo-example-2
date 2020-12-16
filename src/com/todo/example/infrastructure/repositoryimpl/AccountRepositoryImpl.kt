@@ -1,10 +1,8 @@
 package com.todo.example.infrastructure.repositoryimpl
 
 import com.todo.example.domain.account.Account
-import com.todo.example.domain.account.AccountId
 import com.todo.example.infrastructure.dao.Accounts
 import com.todo.example.infrastructure.framework.DatabaseFactory.dbQuery
-import com.todo.example.interfaces.model.NewAccount
 import com.todo.example.interfaces.repository.AccountRepository
 import io.ktor.util.KtorExperimentalAPI
 import org.jetbrains.exposed.sql.ResultRow
@@ -22,11 +20,11 @@ class AccountRepositoryImpl: AccountRepository {
             .singleOrNull()
     }
 
-    override suspend fun createAccount(account: NewAccount): Account {
+    override suspend fun createAccount(account: Account, passwd: String): Account {
         var key = 0
         dbQuery {
             key = (Accounts.insert {
-                it[password] = createHash(account.password!!)
+                it[password] = createHash(passwd)
                 it[name] = account.name
                 it[email] = account.email
             } get Accounts.id)
@@ -50,9 +48,5 @@ class AccountRepositoryImpl: AccountRepository {
     }
 
     private fun convertAccount(row: ResultRow): Account =
-        Account(
-            accountId = AccountId(row[Accounts.id]),
-            name = row[Accounts.name],
-            email = row[Accounts.email],
-        )
+        Account.reconstruct(row[Accounts.id], row[Accounts.name], row[Accounts.email],)
 }

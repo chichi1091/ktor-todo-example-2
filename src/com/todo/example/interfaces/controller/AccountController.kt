@@ -3,7 +3,7 @@ package com.todo.example.interfaces.controller
 import com.todo.example.infrastructure.framework.JWTConfig
 import com.todo.example.interfaces.model.AuthViewModel
 import com.todo.example.interfaces.model.Login
-import com.todo.example.interfaces.model.NewAccount
+import com.todo.example.interfaces.model.NewAccountModel
 import com.todo.example.usecase.AccountUseCase
 import io.ktor.application.call
 import io.ktor.http.HttpStatusCode
@@ -19,17 +19,17 @@ import org.koin.ktor.ext.inject
 class AccountController(private val useCase: AccountUseCase) {
     private val jwtConfig = JWTConfig()
 
-    suspend fun createAccount(newAccount: NewAccount): AuthViewModel {
-        val account = useCase.createAccount(newAccount)
-        val token = jwtConfig.createToken(account.accountId.raw)
+    suspend fun createAccount(newAccount: NewAccountModel): AuthViewModel {
+        val accountId = useCase.createAccount(newAccount)
+        val token = jwtConfig.createToken(accountId.raw)
         return AuthViewModel(token)
     }
 
     suspend fun authentication(login: Login): AuthViewModel? {
-        val account = useCase.authentication(login)
-        return if(account == null) null
+        val accountId = useCase.authentication(login)
+        return if(accountId == null) null
         else {
-            val token = jwtConfig.createToken(account.accountId.raw)
+            val token = jwtConfig.createToken(accountId.raw)
             AuthViewModel(token)
         }
     }
@@ -41,7 +41,7 @@ fun Route.accounts() {
         val controller: AccountController by inject()
 
         post("/") {
-            val newAccount = call.receive<NewAccount>()
+            val newAccount = call.receive<NewAccountModel>()
             call.respond(HttpStatusCode.Created, controller.createAccount(newAccount))
         }
 

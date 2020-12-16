@@ -1,7 +1,6 @@
 package com.todo.example.infrastructure.repositoryimpl
 
 import com.todo.example.domain.account.Account
-import com.todo.example.interfaces.model.NewAccount
 import com.todo.example.interfaces.repository.AccountRepository
 
 class MockAccountRepositoryImpl(
@@ -11,7 +10,7 @@ class MockAccountRepositoryImpl(
         return account
     }
 
-    override suspend fun createAccount(account: NewAccount): Account {
+    override suspend fun createAccount(account: Account, passwd: String): Account {
         return this.account
     }
 
