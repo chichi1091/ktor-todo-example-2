@@ -1,10 +1,12 @@
 package com.todo.example.interfaces.controller
 
+import com.todo.example.infrastructure.framework.AuthUser
 import com.todo.example.interfaces.model.NewTodoModel
 import com.todo.example.interfaces.model.TodoModel
 import com.todo.example.usecase.TodoUseCase
 import io.ktor.application.call
 import io.ktor.auth.authenticate
+import io.ktor.auth.principal
 import io.ktor.http.HttpStatusCode
 import io.ktor.request.receive
 import io.ktor.response.respond
@@ -15,7 +17,8 @@ import org.koin.ktor.ext.inject
 class TodoController(private val useCase: TodoUseCase) {
     suspend fun getAllTodos(): List<TodoModel> = useCase.getAllTodos()
     suspend fun getTodo(id: Int): TodoModel? = useCase.getTodo(id)
-    suspend fun addTodo(newTodoModel: NewTodoModel): TodoModel = useCase.addTodo(newTodoModel)
+    suspend fun addTodo(newTodoModel: NewTodoModel, accountId: Int): TodoModel =
+        useCase.addTodo(newTodoModel, accountId)
     suspend fun updateTodo(newTodoModel: NewTodoModel): TodoModel? = useCase.updateTodo(newTodoModel)
     suspend fun deleteTodo(id: Int): Boolean = useCase.deleteTodo(id)
 }
@@ -40,7 +43,8 @@ fun Route.todos() {
 
             post("/") {
                 val newTodo = call.receive<NewTodoModel>()
-                call.respond(HttpStatusCode.Created, controller.addTodo(newTodo))
+                val accountId = call.principal<AuthUser>()!!.id
+                call.respond(HttpStatusCode.Created, controller.addTodo(newTodo, accountId))
             }
 
             put("/{id}") {

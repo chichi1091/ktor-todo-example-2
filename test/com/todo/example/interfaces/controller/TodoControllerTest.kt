@@ -7,7 +7,6 @@ import com.todo.example.domain.account.Account
 import com.todo.example.domain.account.AccountId
 import com.todo.example.domain.todo.Status
 import com.todo.example.domain.todo.Todo
-import com.todo.example.domain.todo.TodoId
 import com.todo.example.infrastructure.framework.JWTConfig
 import com.todo.example.infrastructure.module
 import com.todo.example.infrastructure.repositoryimpl.MockAccountRepositoryImpl
@@ -51,8 +50,8 @@ class TodoControllerTest {
     @Test
     fun タスク一覧を呼び出すと200が変えること() {
         val todos = listOf(
-            Todo(TodoId(1), "test1", Status.INCOMPLETE, AccountId(1)),
-            Todo(TodoId(2), "test2", Status.COMPLETED, AccountId(1)),
+            Todo.reconstruct(1, "test1", Status.INCOMPLETE.toString(), 1),
+            Todo.reconstruct(2, "test2", Status.COMPLETED.toString(), 1),
         )
         val account = Account(AccountId(1), "test", "hoge@hoge.com")
 

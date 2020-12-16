@@ -1,5 +1,6 @@
 package com.todo.example.usecase.impl
 
+import com.todo.example.domain.todo.Todo
 import com.todo.example.interfaces.model.NewTodoModel
 import com.todo.example.interfaces.model.TodoModel
 import com.todo.example.interfaces.repository.AccountRepository
@@ -15,7 +16,7 @@ class TodoUseCaseImpl(
         return todos.map {
             val account = accountRepository.getAccount(it.personId.raw)
                 ?: throw NullPointerException()
-            TodoModel(it.todoId.raw, it.task, it.status, account.name)
+            TodoModel(it.todoId?.raw, it.task, it.status, account.name)
         }
     }
 
@@ -25,26 +26,31 @@ class TodoUseCaseImpl(
         else {
             val account = accountRepository.getAccount(todo.personId.raw)
                 ?: throw NullPointerException()
-            TodoModel(todo.todoId.raw, todo.task, todo.status, account.name)
+            TodoModel(todo.todoId?.raw, todo.task, todo.status, account.name)
         }
     }
 
-    override suspend fun addTodo(newTodoModel: NewTodoModel): TodoModel {
-        val todo = todoRepository.create(newTodoModel)
+    override suspend fun addTodo(newTodoModel: NewTodoModel, accountId: Int): TodoModel {
+        val todo = Todo.createTodo(newTodoModel.task, accountId)
+        val newTodo = todoRepository.create(todo)
         return run {
-            val account = accountRepository.getAccount(todo.personId.raw)
+            val account = accountRepository.getAccount(newTodo.personId.raw)
                 ?: throw NullPointerException()
-            TodoModel(todo.todoId.raw, todo.task, todo.status, account.name)
+            TodoModel(newTodo.todoId?.raw, newTodo.task, newTodo.status, account.name)
         }
     }
 
     override suspend fun updateTodo(newTodoModel: NewTodoModel): TodoModel? {
-        val todo = todoRepository.update(newTodoModel)
-        return if(todo == null) null
+        val todo = newTodoModel.id?.let { todoRepository.findById(it) }
+            ?: throw IllegalArgumentException("タスクが存在しません")
+        todo.updateTodo(newTodoModel.task, newTodoModel.status)
+
+        val newTodo = todoRepository.update(todo)
+        return if(newTodo == null) null
         else {
-            val account = accountRepository.getAccount(todo.personId.raw)
+            val account = accountRepository.getAccount(newTodo.personId.raw)
                 ?: throw NullPointerException()
-            TodoModel(todo.todoId.raw, todo.task, todo.status, account.name)
+            TodoModel(newTodo.todoId?.raw, newTodo.task, newTodo.status, account.name)
         }
     }
 

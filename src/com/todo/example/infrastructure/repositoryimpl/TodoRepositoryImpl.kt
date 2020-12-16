@@ -1,12 +1,8 @@
 package com.todo.example.infrastructure.repositoryimpl
 
-import com.todo.example.domain.account.AccountId
-import com.todo.example.domain.todo.Status
 import com.todo.example.domain.todo.Todo
-import com.todo.example.domain.todo.TodoId
 import com.todo.example.infrastructure.dao.Todos
 import com.todo.example.infrastructure.framework.DatabaseFactory.dbQuery
-import com.todo.example.interfaces.model.NewTodoModel
 import com.todo.example.interfaces.repository.TodoRepository
 import io.ktor.util.KtorExperimentalAPI
 import org.jetbrains.exposed.sql.*
@@ -24,24 +20,27 @@ class TodoRepositoryImpl: TodoRepository {
             .singleOrNull()
     }
 
-    override suspend fun create(todoModel: NewTodoModel): Todo {
+    override suspend fun create(todo: Todo): Todo {
         var key = 0
         dbQuery {
             key = (Todos.insert {
-                it[task] = todoModel.task
+                it[task] = todo.task
+                it[status] = todo.status.toString()
+                it[personId] = todo.personId.raw
             } get Todos.id)
         }
         return findById(key)!!
     }
 
-    override suspend fun update(todoModel: NewTodoModel): Todo? {
-        val id = todoModel.id
+    override suspend fun update(todo: Todo): Todo? {
+        val id = todo.todoId?.raw
         return if (id == null) {
-            create(todoModel)
+            create(todo)
         } else {
             dbQuery {
                 Todos.update({ Todos.id eq id }) {
-                    it[task] = todoModel.task
+                    it[task] = todo.task
+                    it[status] = todo.status.toString()
                 }
             }
             findById(id)
@@ -57,10 +56,5 @@ class TodoRepositoryImpl: TodoRepository {
     }
 
     private fun convertTodo(row: ResultRow): Todo =
-        Todo(
-            todoId = TodoId(row[Todos.id]),
-            task = row[Todos.task],
-            status = Status.valueOf(row[Todos.status]),
-            personId = AccountId(row[Todos.personId]),
-        )
+        Todo.reconstruct(row[Todos.id], row[Todos.task], row[Todos.status], row[Todos.personId],)
 }
