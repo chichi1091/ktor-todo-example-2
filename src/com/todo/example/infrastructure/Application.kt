@@ -1,12 +1,7 @@
 package com.todo.example.infrastructure
 
 import com.fasterxml.jackson.databind.SerializationFeature
-import com.todo.example.infrastructure.framework.AuthUser
-import com.todo.example.infrastructure.framework.DatabaseFactory
-import com.todo.example.infrastructure.framework.JWTConfig
-import com.todo.example.infrastructure.framework.koinModule
-import com.todo.example.interfaces.controller.accounts
-import com.todo.example.interfaces.controller.todos
+import com.todo.example.infrastructure.framework.*
 import io.ktor.application.Application
 import io.ktor.application.install
 import io.ktor.auth.Authentication
