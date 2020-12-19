@@ -53,7 +53,7 @@ class AccountControllerTest {
         }
 
         val newAccount =
-            com.todo.example.interfaces.model.NewAccountModel(null, "password", "test", "test@hoge.com")
+            com.todo.example.interfaces.model.NewAccountRequest(null, "password", "test", "test@hoge.com")
 
         with(engine) {
             handleRequest(HttpMethod.Post, "/accounts") {

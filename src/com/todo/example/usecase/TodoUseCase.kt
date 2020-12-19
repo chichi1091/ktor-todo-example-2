@@ -1,12 +1,12 @@
 package com.todo.example.usecase
 
-import com.todo.example.interfaces.model.NewTodoModel
-import com.todo.example.interfaces.model.TodoModel
+import com.todo.example.interfaces.model.NewTodoRequest
+import com.todo.example.interfaces.model.TodoResponse
 
 interface TodoUseCase {
-    suspend fun getAllTodos(): List<TodoModel>
-    suspend fun getTodo(id: Int): TodoModel?
-    suspend fun addTodo(newTodoModel: NewTodoModel, accountId: Int): TodoModel
-    suspend fun updateTodo(newTodoModel: NewTodoModel): TodoModel?
+    suspend fun getAllTodos(): List<TodoResponse>
+    suspend fun getTodo(id: Int): TodoResponse?
+    suspend fun addTodo(newTodoRequest: NewTodoRequest, accountId: Int): TodoResponse
+    suspend fun updateTodo(newTodoRequest: NewTodoRequest): TodoResponse?
     suspend fun deleteTodo(id: Int): Boolean
 }

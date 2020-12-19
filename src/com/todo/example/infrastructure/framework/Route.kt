@@ -2,9 +2,9 @@ package com.todo.example.infrastructure.framework
 
 import com.todo.example.interfaces.controller.AccountController
 import com.todo.example.interfaces.controller.TodoController
-import com.todo.example.interfaces.model.Login
-import com.todo.example.interfaces.model.NewAccountModel
-import com.todo.example.interfaces.model.NewTodoModel
+import com.todo.example.interfaces.model.LoginRequest
+import com.todo.example.interfaces.model.NewAccountRequest
+import com.todo.example.interfaces.model.NewTodoRequest
 import io.ktor.application.call
 import io.ktor.auth.authenticate
 import io.ktor.auth.principal
@@ -21,12 +21,12 @@ fun Route.accounts() {
         val controller: AccountController by inject()
 
         post("/") {
-            val newAccount = call.receive<NewAccountModel>()
+            val newAccount = call.receive<NewAccountRequest>()
             call.respond(HttpStatusCode.Created, controller.createAccount(newAccount))
         }
 
         post("/auth") {
-            val login = call.receive<Login>()
+            val login = call.receive<LoginRequest>()
             val result = controller.authentication(login)
             if(result == null) call.respond(HttpStatusCode.Forbidden)
             else call.respond(HttpStatusCode.OK, result)
@@ -53,13 +53,13 @@ fun Route.todos() {
             }
 
             post("/") {
-                val newTodo = call.receive<NewTodoModel>()
+                val newTodo = call.receive<NewTodoRequest>()
                 val accountId = call.principal<AuthUser>()!!.id
                 call.respond(HttpStatusCode.Created, controller.addTodo(newTodo, accountId))
             }
 
             put("/{id}") {
-                val todo = call.receive<NewTodoModel>()
+                val todo = call.receive<NewTodoRequest>()
                 val updated = controller.updateTodo(todo)
                 if (updated == null) call.respond(HttpStatusCode.NotFound)
                 else call.respond(HttpStatusCode.OK, updated)
