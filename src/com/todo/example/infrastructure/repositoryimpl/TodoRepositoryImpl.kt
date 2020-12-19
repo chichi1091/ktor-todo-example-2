@@ -32,7 +32,7 @@ class TodoRepositoryImpl: TodoRepository {
         return findById(key)!!
     }
 
-    override suspend fun update(todo: Todo): Todo? {
+    override suspend fun update(todo: Todo): Todo {
         val id = todo.todoId?.raw
         return if (id == null) {
             create(todo)
@@ -43,7 +43,7 @@ class TodoRepositoryImpl: TodoRepository {
                     it[status] = todo.status.toString()
                 }
             }
-            findById(id)
+            findById(id)!!
         }
     }
 

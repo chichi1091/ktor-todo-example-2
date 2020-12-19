@@ -2,56 +2,40 @@ package com.todo.example.usecase.impl
 
 import com.todo.example.domain.todo.Todo
 import com.todo.example.interfaces.model.NewTodoRequest
-import com.todo.example.interfaces.model.TodoResponse
 import com.todo.example.interfaces.repository.AccountRepository
 import com.todo.example.interfaces.repository.TodoRepository
 import com.todo.example.usecase.TodoUseCase
+import com.todo.example.usecase.dto.TodoDto
 
 class TodoUseCaseImpl(
     private val todoRepository: TodoRepository,
     private val accountRepository: AccountRepository,
 ): TodoUseCase {
-    override suspend fun getAllTodos(): List<TodoResponse> {
-        val todos = todoRepository.findAll()
-        return todos.map {
-            val account = accountRepository.findByAccountId(it.personId.raw)
-                ?: throw NullPointerException()
-            TodoResponse(it.todoId?.raw, it.task, it.status, account.name)
-        }
+    override suspend fun getAllTodos(): List<Todo> {
+        return todoRepository.findAll()
     }
 
-    override suspend fun getTodo(id: Int): TodoResponse? {
+    override suspend fun getTodo(id: Int): TodoDto {
         val todo = todoRepository.findById(id)
-        return if(todo == null) null
-        else {
-            val account = accountRepository.findByAccountId(todo.personId.raw)
-                ?: throw NullPointerException()
-            TodoResponse(todo.todoId?.raw, todo.task, todo.status, account.name)
-        }
+            ?: throw NullPointerException()
+        val account = accountRepository.findByAccountId(todo.personId.raw)
+            ?: throw NullPointerException()
+        return TodoDto(todo.todoId!!, todo.task, todo.status, account.name)
     }
 
-    override suspend fun addTodo(newTodoRequest: NewTodoRequest, accountId: Int): TodoResponse {
+    override suspend fun addTodo(newTodoRequest: NewTodoRequest, accountId: Int): TodoDto {
         val todo = Todo.createTodo(newTodoRequest.task, accountId)
         val newTodo = todoRepository.create(todo)
-        return run {
-            val account = accountRepository.findByAccountId(newTodo.personId.raw)
-                ?: throw NullPointerException()
-            TodoResponse(newTodo.todoId?.raw, newTodo.task, newTodo.status, account.name)
-        }
+        return getTodo(newTodo.todoId!!.raw)
     }
 
-    override suspend fun updateTodo(newTodoRequest: NewTodoRequest): TodoResponse? {
+    override suspend fun updateTodo(newTodoRequest: NewTodoRequest): TodoDto {
         val todo = newTodoRequest.id?.let { todoRepository.findById(it) }
             ?: throw IllegalArgumentException("タスクが存在しません")
         todo.updateTodo(newTodoRequest.task, newTodoRequest.status)
 
         val newTodo = todoRepository.update(todo)
-        return if(newTodo == null) null
-        else {
-            val account = accountRepository.findByAccountId(newTodo.personId.raw)
-                ?: throw NullPointerException()
-            TodoResponse(newTodo.todoId?.raw, newTodo.task, newTodo.status, account.name)
-        }
+        return getTodo(newTodo.todoId!!.raw)
     }
 
     override suspend fun deleteTodo(id: Int): Boolean = todoRepository.delete(id)

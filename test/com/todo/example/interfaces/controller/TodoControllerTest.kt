@@ -10,7 +10,8 @@ import com.todo.example.infrastructure.framework.JWTConfig
 import com.todo.example.infrastructure.module
 import com.todo.example.infrastructure.repositoryimpl.MockAccountRepositoryImpl
 import com.todo.example.infrastructure.repositoryimpl.MockTodoRepositoryImpl
-import com.todo.example.interfaces.model.TodoResponse
+import com.todo.example.interfaces.model.TodosResponse
+import com.todo.example.interfaces.presenter.TodoPresenter
 import com.todo.example.interfaces.repository.AccountRepository
 import com.todo.example.interfaces.repository.TodoRepository
 import com.todo.example.usecase.TodoUseCase
@@ -55,12 +56,13 @@ class TodoControllerTest {
         val account = Account.reconstruct(1, "test", "hoge@hoge.com")
 
         val todoModels = listOf(
-            TodoResponse(1, "test1", Status.INCOMPLETE, "test"),
-            TodoResponse(2, "test2", Status.COMPLETED, "test"),
+            TodosResponse(1, "test1", Status.INCOMPLETE),
+            TodosResponse(2, "test2", Status.COMPLETED),
         )
 
         val mockModule: Module = module {
-            single { TodoController(get()) }
+            single { TodoController(get(), get()) }
+            single { TodoPresenter() }
             single<TodoUseCase> { TodoUseCaseImpl(get(), get()) }
             single{ MockAccountRepositoryImpl(account) as AccountRepository }
             single{ MockTodoRepositoryImpl(todos) as TodoRepository }

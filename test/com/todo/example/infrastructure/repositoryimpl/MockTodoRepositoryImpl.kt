@@ -14,7 +14,8 @@ class MockTodoRepositoryImpl(
     override suspend fun create(todo: Todo): Todo =
         Todo.reconstruct(3, "test3", Status.INCOMPLETE.toString(), 1)
 
-    override suspend fun update(todo: Todo): Todo? = null
+    override suspend fun update(todo: Todo): Todo =
+        Todo.reconstruct(3, "test3", Status.INCOMPLETE.toString(), 1)
 
     override suspend fun delete(id: Int): Boolean = true
 }
